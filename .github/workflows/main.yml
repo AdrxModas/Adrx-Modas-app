@@ -1,0 +1,30 @@
+name: Extrair Adrx.Modas V20
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Extrair V20
+        run: |
+          mkdir -p /tmp/adrx-v20
+          unzip -o adrx_modas_app_v20_final_desenvolvimento.zip -d /tmp/adrx-v20
+          cp -a /tmp/adrx-v20/. .
+          rm -f adrx_modas_app_v20_final_desenvolvimento.zip
+
+      - name: Publicar arquivos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "chore: extrair projeto V20"
+          git push
